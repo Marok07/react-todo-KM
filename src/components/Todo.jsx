@@ -8,6 +8,14 @@ function Todo(props) {
   setNewName(e.target.value);
   }
   function handleSubmit(e) {
+  if (newName.trim() === "") {
+    alert("Task name cannot be empty!");
+    return;
+  }
+  if (newName.trim().toLowerCase() === "react") {
+    alert("You can't rename a task to 'React'!");
+    return;
+  }
   e.preventDefault();
   props.editTask(props.id, newName);
   setNewName("");

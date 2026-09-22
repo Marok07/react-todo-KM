@@ -25,9 +25,21 @@ function App(props) {
   />
   ));
 
+  function SaveTasksToLocalStorage(tasks) {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
   function addTask(name) {
+    if(name.trim().toLowerCase() === "react") {
+      alert("You can't add 'React' as a task!");
+      return;
+    }
+    if(name.trim() === "") {
+      alert("Task name cannot be empty!");
+      return;
+    }
     const newTask = { id: `todo-${nanoid()}`, name, completed: false };
     setTasks([...tasks, newTask]);
+    SaveTasksToLocalStorage([...tasks, newTask]);
   }
 
   function toggleTaskCompleted(id) {
@@ -41,11 +53,13 @@ function App(props) {
       return task;
     });
     setTasks(updatedTasks);
+    SaveTasksToLocalStorage(updatedTasks);
   }
 
   function deleteTask(id) {
     const remainingTasks = tasks.filter((task) => id !== task.id);
     setTasks(remainingTasks);
+    SaveTasksToLocalStorage(remainingTasks);
   }
   const taskList = tasks
   .filter(FILTER_MAP[filter])
@@ -69,6 +83,7 @@ function App(props) {
       return task;
     });
     setTasks(editedTaskList);
+    SaveTasksToLocalStorage(editedTaskList);
   }
   const tasksNoun = taskList.length !== 1 ? "tasks" : "task";
   const headingText = `${taskList.length} ${tasksNoun} remaining`;
