@@ -48,7 +48,7 @@ function App(props) {
       alert("Task name cannot be empty!");
       return;
     }
-    const newTask = { id: `todo-${nanoid()}`, name, completed: false };
+    const newTask = { id: `todo-${nanoid()}`, name, completed: false, priority: 1 };
     setTasks([...tasks, newTask]);
     SaveTasksToLocalStorage([...tasks, newTask]);
   }
@@ -72,17 +72,28 @@ function App(props) {
     setTasks(remainingTasks);
     SaveTasksToLocalStorage(remainingTasks);
   }
-  const taskList = tasks
+  function updateTaskPriority(id, priority) {
+    const updatedTasks = tasks.map((task) =>
+      id === task.id ? { ...task, priority } : task
+    );
+    setTasks(updatedTasks);
+    SaveTasksToLocalStorage(updatedTasks);
+  }
+
+  const taskList = [...tasks]
   .filter(FILTER_MAP[filter])
+  .sort((taskA, taskB) => (taskB.priority ?? 1) - (taskA.priority ?? 1))
   .map((task) => (
     <Todo
       id={task.id}
       name={task.name}
       completed={task.completed}
+      priority={task.priority ?? 1}
       key={task.id}
       toggleTaskCompleted={toggleTaskCompleted}
       deleteTask={deleteTask}
       editTask={editTask}
+      updateTaskPriority={updateTaskPriority}
     />
   ));
 

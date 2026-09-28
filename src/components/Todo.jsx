@@ -11,10 +11,22 @@ return ref.current;
 function Todo(props) {
   const [isEditing, setEditing] = useState(false);
   const [newName, setNewName] = useState("");
+  const [priorityDraft, setPriorityDraft] = useState(props.priority);
   const editFieldRef = useRef(null);
   const editButtonRef = useRef(null);
   const wasEditing = usePrevious(isEditing);
 
+  function handlePriorityChange(event) {
+    setPriorityDraft(Number(event.target.value));
+  }
+
+  function commitPriority(event) {
+    const priority = Number(event.currentTarget.value);
+    setPriorityDraft(priority);
+    if (priority !== props.priority) {
+      props.updateTaskPriority(props.id, priority);
+    }
+  }
 
   function handleChange(e) {
   setNewName(e.target.value);
@@ -75,6 +87,19 @@ const viewTemplate = (
       <label className="todo-label" htmlFor={props.id}>
         {props.name}
       </label>
+      <input
+        id={`${props.id}-priority`}
+        type="range"
+        name="priorityBar"
+        className="priorityBar"
+        min={1}
+        max={5}
+        value={priorityDraft}
+        onChange={handlePriorityChange}
+        onPointerUp={commitPriority}
+        onKeyUp={commitPriority}
+      />
+      <label htmlFor={`${props.id}-priority`}>Priority: <span>{priorityDraft}</span></label>
     </div>
     <div className="btn-group">
       <button 
