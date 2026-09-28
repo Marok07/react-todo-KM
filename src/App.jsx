@@ -4,8 +4,12 @@ import Todo from "./components/Todo";
 import Form from "./components/Form";
 import FilterButton from "./components/FilterButton";
 
+
 function App(props) {
-  const [tasks, setTasks] = useState(props.tasks);
+  const [tasks, setTasks] = useState(() => {
+  const savedTasks = localStorage.getItem("tasks");
+  return savedTasks ? JSON.parse(savedTasks) : props.tasks ?? [];
+  });
   const [filter, setFilter] = useState("All");
 
   const FILTER_MAP = {
